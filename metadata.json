@@ -1,0 +1,5 @@
+{
+  "name": "Autonomous AI News Nexus",
+  "description": "A self-expanding, AI-curated news ecosystem that autonomously gathers, catalogs, and organizes global news using Gemini's search grounding and analysis capabilities.",
+  "requestFramePermissions": []
+}
