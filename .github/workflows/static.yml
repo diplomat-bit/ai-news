@@ -1,3 +1,4 @@
+
 name: Deploy static content to Pages
 
 on:
@@ -16,17 +17,16 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: self-hosted
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
 
     steps:
-      # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Setup Node.js
+      # Install Node.js (if needed)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -36,22 +36,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Build project
-      - name: Build
+      # Build your static site
+      - name: Build project
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: npm run build
 
-      # Configure Pages deployment
-      - name: Configure Pages
-        id: deployment
-        uses: actions/configure-pages@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
-      # Upload the build folder as artifact (v4)
-      - name: Upload Pages artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: pages-build
-          path: ./build
+          path: './dist' # Change this if your build output folder is different
 
-      # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+        id: deployment
+        uses: actions/deploy-pages@v4
