@@ -3,7 +3,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { NewsArticle } from "../types";
 
 // Initialize the Google GenAI SDK using the environment variable API_KEY.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY || "");
 
 /**
  * Discovers emerging news clusters that merit their own page.
@@ -13,7 +13,7 @@ export async function discoverEmergingTopics(): Promise<string[]> {
   const prompt = "Identify 4 highly specific and emerging global news topics today that are distinct from 'General Politics' or 'General Tech'. Examples: 'Solid-state battery breakthroughs', 'Red Sea shipping crisis', 'Generative Video regulations'. Return as a simple JSON array of strings.";
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await genAI.models.generateContent({
       model,
       contents: prompt,
       config: {
@@ -46,7 +46,7 @@ export async function fetchNewsByTopic(topic: string): Promise<NewsArticle[]> {
   Ensure the data is current and verified.`;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await genAI.models.generateContent({
       model,
       contents: prompt,
       config: {
@@ -98,7 +98,7 @@ export async function getTopicInsights(topic: string, articles: NewsArticle[]): 
   const prompt = `Context: ${context}\n\nTask: Provide an autonomous strategic synthesis of the "${topic}" cluster. What are the non-obvious implications? What should be monitored in the next 72 hours? Be sharp, professional, and data-driven.`;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await genAI.models.generateContent({
       model,
       contents: prompt,
       config: {
